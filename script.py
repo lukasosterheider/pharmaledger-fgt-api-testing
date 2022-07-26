@@ -7,9 +7,9 @@ import string
 import json
 
 # Variables
-api = "https://api-mah-bayer-fgt.pharmaledger.pdmfc.com/"
-user = "MAH251339219"
-password = "This1sSuchAS3curePassw0rd"
+api = "https://api-mah-company-fgt.pharmaledger.xxx/"
+user = "MAHXXXX"
+password = "YourPassword"
 basicAuth = HTTPBasicAuth(user, password)
 headers = {"Content-Type": "application/json", "accept": "application/json"}
 
