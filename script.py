@@ -24,7 +24,7 @@ shipments = []
 
 expiryDate = "2030-01-01"
 
-shipmentReceiver = "PHA228233000"
+shipmentReceiver = "WHSXXXX"
 
 # Create Products
 
