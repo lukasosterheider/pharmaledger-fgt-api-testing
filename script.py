@@ -23,15 +23,29 @@ batches = []
 shipments = []
 
 expiryDate = "2030-01-01"
+productName = "Sample Product"
 
 shipmentReceiver = "WHSXXXX"
+
+successRequests = 0
+errorRequests = 0
+
+# Functions
+
+def evaluateResponse(status_code):
+    if status_code == 200:
+        global successRequests
+        successRequests += 1
+    else:
+        global errorRequests
+        errorRequests += 1
 
 # Create Products
 
 for x in range(numberOfProducts):
     rand = random.randint(1000000000000,9999999999999)
     gtinNumber = int(gtin.GTIN(raw=rand))
-    name = "Sample Product " + ''.join(random.choices(string.ascii_uppercase, k=8))
+    name = productName + " " + ''.join(random.choices(string.ascii_uppercase, k=8))
     description = ''.join(random.choices(string.ascii_lowercase, k=16))
     
     products.append(gtinNumber)
@@ -40,7 +54,7 @@ for x in range(numberOfProducts):
     response = requests.post(api + "traceability/product/create", auth=basicAuth, headers=headers , data = json.dumps(payload))
 
     print(response)
-    # print(response.content)
+    evaluateResponse(response.status_code)
 
 print("Products: " + str(products))
 
@@ -60,7 +74,7 @@ for x in products:
         response = requests.post(api + "traceability/batch/create", auth=basicAuth, headers=headers , data = json.dumps(payload))
 
         print(response)
-        # print(response.content)
+        evaluateResponse(response.status_code)
 
 print("Batches: " + str(batches))
 
@@ -76,7 +90,9 @@ for x in range(len(batches)):
 
     payload = {'shipmentId':str(shipmentId), 'requesterId': shipmentReceiver, 'shipmentLines':[{'gtin':str(gtinNumber), 'batch':batchNumber,  'quantity':numberOfSerials}]}
     response = requests.post(api + "traceability/shipment/create", auth=basicAuth, headers=headers , data = json.dumps(payload))
+
     print(response)
+    evaluateResponse(response.status_code)
 
 print("Shipments: " + str(shipments))
 
@@ -97,15 +113,18 @@ for x in shipments:
 
     response = requests.put(api + "traceability/shipment/update/" + str(x), auth=basicAuth, headers=headers , data = json.dumps(payload1))
     print(response)
+    evaluateResponse(response.status_code)
 
     sleep(1)
 
     response = requests.put(api + "traceability/shipment/update/" + str(x), auth=basicAuth, headers=headers , data = json.dumps(payload2))
     print(response)
+    evaluateResponse(response.status_code)
 
     sleep(1)
 
     response = requests.put(api + "traceability/shipment/update/" + str(x), auth=basicAuth, headers=headers , data = json.dumps(payload3))
     print(response)
+    evaluateResponse(response.status_code)
 
-print("Done!")
+print("Script completed - Total Requests: " + str(successRequests + errorRequests) + " Successes: " + str(successRequests) + " Errors: " + str(errorRequests))
